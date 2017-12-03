@@ -17,7 +17,14 @@
   (let* ((in (digits input))
 	 (c (append in (list (car in)))))
     (help c 0)))
-  
+
+(define (foldl f result list)
+  (if (null? list) result
+      (foldl f (f (car list) result) (cdr list))))
 (define (captcha2 input)
   (let* ((in (digits input))
-	 (c (append in (list (car in)))))))
+	 (c (append in (list (car in)))))
+    (cdr (foldl (lambda (x t) (if (= x (car t))
+				  (cons x (+ (cdr t) x))
+				  (cons x (cdr t))))
+		(cons 0 0) c))))
