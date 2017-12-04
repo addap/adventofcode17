@@ -1,0 +1,9 @@
+(define input 289326)
+
+;; 2 methods, either take 289326 steps and keep track of the coordinates, then compute manhattan
+;; or find a closed form solution 
+;; vllt eine circular list um die richtungen zu wechseln
+;; '(right up left down ...)
+;; oder eine turn methode die eben matched
+(define (calc-spiral-steps n)
+  (
