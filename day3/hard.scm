@@ -1,0 +1,38 @@
+(load "../auxiliaries.scm")
+
+(define input 289326)
+
+;; needs documentation but iw roughly works the same as the easy solution
+;; but it keeps track of the values that have already been calculated (vs)
+;; when a new one is calculated, we filter out all the neighbors of the current cell and sum up their values
+(define (calc-spiral-steps)
+  (define (next d)
+    (let ((dir (car d))
+	  (scale (cadr d))
+	  (count (caddr d)))
+      (cond ((> count 0) (list dir scale (- count 1)))
+	    ((equal? dir '(1 0)) (list '(0 1) scale (-  scale 1)))
+	    ((equal? dir '(0 1)) (list '(-1 0) (+ scale 1) scale))
+	    ((equal? dir '(-1 0)) (list '(0 -1) scale (- scale 1)))
+	    ((equal? dir '(0 -1)) (list '(1 0) (+ scale 1) scale))
+	    (else (display "something wrong")
+		  (display d)))))
+  (define (add-coord c1 c2)
+    (list (+ (car c1) (car c2))
+	  (+ (cadr c1) (cadr c2))))
+  (define (calc-value c vs)
+  (let* ((adjacent '((1 0) (1 1) (0 1) (-1 1) (-1 0) (-1 -1) (0 -1) (1 -1)))
+	 (neighbors (map (lambda (a) (get-val (filter (lambda (v) (equal? (car v) (add-coord c a)))
+						      vs)))
+			 adjacent)))
+    (foldl + 0 neighbors)))
+  (define (get-val v) (if (null? v) 0 (cdar v)))
+  (define (help d c vs)
+    (if (> (get-val vs) input)
+	(get-val vs)
+	(help (next d) (add-coord c (car d)) (cons (cons c (calc-value c vs))
+						   vs))))
+  (help (list '(0 1) 1 0) '(1 0) (list (cons '(0 0) 1))))
+
+(calc-spiral-steps)
+
