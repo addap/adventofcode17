@@ -30,3 +30,25 @@
 (define (enumerate-interval n m)
   (if (>= n m) '()
       (cons n (enumerate-interval (+ n 1) m))))
+
+(define (flatmap proc list)
+  (fold-right append '() (map proc list)))
+
+(define (cross-product list1 list2)
+  (flatmap (lambda (e1)
+	 (map (lambda (e2)
+		(cons e1 e2))
+	      list2))
+	   list1))
+
+(define (cross-product-wo-reflexive list1 list2)
+  (remove-step 0 (+ (length list2) 1)
+	       (cross-product list1 list2)))
+
+(define (remove-step start step list)
+  (cond ((null? list) '())
+	((= start 0) (remove-step (- step 1) step (cdr list)))
+	(else (cons (car list)
+		    (remove-step (- start 1) step (cdr list))))))
+
+	 
