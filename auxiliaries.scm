@@ -4,7 +4,6 @@
 	 (back (sublist list l (length list))))
     (append back front)))
 
-
 (define (foldl f initial list)
   (if (null? list) initial
       (foldl f (f (car list) initial) (cdr list))))
@@ -51,4 +50,4 @@
 	(else (cons (car list)
 		    (remove-step (- start 1) step (cdr list))))))
 
-	 
+     
