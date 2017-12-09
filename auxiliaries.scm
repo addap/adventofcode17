@@ -1,4 +1,4 @@
-(define (rotate-list list n)
+(define (rotate-list n list)
   (let* ((l (modulo n (length list)))
 	 (front (sublist list 0 l))
 	 (back (sublist list l (length list))))
@@ -50,4 +50,9 @@
 	(else (cons (car list)
 		    (remove-step (- start 1) step (cdr list))))))
 
-     
+(define (find-index x list)
+  (define (help n list)
+    (cond ((null? list) #f)
+	  ((equal? x (car list)) n)
+	  (else (help (+ n 1) (cdr list)))))
+  (help 0 list))
