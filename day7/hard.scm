@@ -1,0 +1,30 @@
+(define towers (read (open-input-file "input.txt")))
+(define names (map name in))
+(define (child? child tower) (memq (name child) (children tower)))
+(define (children tower) (cddr tower))
+(define (weight tower) (cadr tower))
+(define (name tower) (car tower))
+(define (find-root towers roots)
+  (if (null? towers)
+      (car roots)
+      (find-root (cdr towers) (remove (lambda (r) (child? r (car towers)))
+				      roots))))
+(define root (find-root towers towers))
+(define (get-tower n) (find (lambda (t) (eq? (name t) n)) towers))
+(define (combined-weight tower)
+  (+ (weight tower)
+     (fold-left + 0 (map combined-weight (map get-tower (children tower))))))
+;; returns if the tower is balanced
+;; If it's not it displays the (combined) weights of the subtowers that caused the imbalance.
+;; I'm gonna figure out the difference myself bc I cba to write something
+(define (balanced? tower)
+  (let* ((subtowers (map get-tower (children tower)))
+	 (weights (map weight subtowers))
+	 (subweights (map combined-weight subtowers)))
+    (if (every balanced? subtowers)
+	(if (apply = subweights)
+	    #t
+	    (begin
+	      (display subweights) (newline) (display weights)
+	      #f))
+	#f)))
