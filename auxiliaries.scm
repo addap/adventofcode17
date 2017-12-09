@@ -56,3 +56,11 @@
 	  ((equal? x (car list)) n)
 	  (else (help (+ n 1) (cdr list)))))
   (help 0 list))
+
+(define (remove-duplicates list)
+  (define (help l result)
+    (cond ((null? l) result)
+	  ((member (car l) result) (help (cdr l) result))
+	  (else (help (cdr l) (cons (car l)
+				    result)))))
+  (help list '()))
