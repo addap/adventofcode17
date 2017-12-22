@@ -1,4 +1,4 @@
-(load "../auxiliaries.scm")
+(load "../util.scm")
 (define input "189,1,111,246,254,2,0,120,215,93,255,50,84,15,94,62")
 (define knot-len 256)
 (define base-knot (enumerate-interval 0 knot-len))

@@ -1,4 +1,4 @@
-(load "../auxiliaries.scm")
+(load "../util.scm")
 (define txt "input.txt")
 (define in (read (open-input-file txt)))
 

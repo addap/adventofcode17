@@ -1,4 +1,4 @@
-(load "../auxiliaries.scm")
+(load "../util.scm")
 (define instructions (read (open-input-file "input.txt")))
 (define the-memory (map (lambda (r) (cons r 0))
 			(remove-duplicates (append (map first instructions)

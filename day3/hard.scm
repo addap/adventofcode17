@@ -1,4 +1,4 @@
-(load "../auxiliaries.scm")
+(load "../util.scm")
 
 (define input 289326)
 
