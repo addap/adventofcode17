@@ -1,12 +1,10 @@
-(define (rotate-list n list)
+(define (rotate-list list n)
+  "Rotates a list by taking the first n elements and appending them to the rest.
+If a negative argument is given the last n elements are prepended to the rest"
   (let* ((l (modulo n (length list)))
 	 (front (sublist list 0 l))
 	 (back (sublist list l (length list))))
     (append back front)))
-
-(define (foldl f initial list)
-  (if (null? list) initial
-      (foldl f (f (car list) initial) (cdr list))))
 
 (define (digits n)
   (define (help n)
@@ -64,3 +62,37 @@
 	  (else (help (cdr l) (cons (car l)
 				    result)))))
   (help list '()))
+
+(define (tabulate n f)
+  (map f (enumerate-interval 0 n)))
+
+(define (make-circular list)
+  (define (help l)
+    (if (null? (cdr l))
+	(set-cdr! l list)
+	(help (cdr l))))
+  (help list))
+
+(define (remove list n)
+  (if (= 0 n) list (remove (cdr list) (- n 1))))
+(define (split list s)
+  (cons (take list s) (remove list s)))
+(define (split-per list s)
+  (if (null? list)
+      '()
+      (let ((sp (split list s)))
+	(cons (car sp) (split-per (cdr sp) s)))))
+
+(define (assert b err)
+  (if b #t (error err)))
+
+(define (iter n initial proc)
+  (if (<= n 0) initial
+      (iter (- n 1) (proc initial) proc)))
+
+;; maybe add general conversion procedure
+;; this only works for 0 <= n <= 255 and outputs the byte as a string of two hex numbers
+(define (byte->hex n)
+  (let ((f (integer-divide n 16)))
+    (string-append (char->string (digit->char (car f) 16))
+		   (char->string (digit->char (cdr f) 16)))))

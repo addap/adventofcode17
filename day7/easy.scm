@@ -1,4 +1,4 @@
-(define in (read (open-input-file "input.txt")))
+(define in (call-with-input-file "./input.txt" read))
 (define names (map name in))
 (define (child? child tower) (memq (name child) (children tower)))
 (define (children tower) (cddr tower))
@@ -9,3 +9,4 @@
       (car roots)
       (find-root (cdr towers) (remove (lambda (r) (child? r (car towers)))
 				      roots))))
+
