@@ -28,8 +28,12 @@ If a negative argument is given the last n elements are prepended to the rest"
   (if (>= n m) '()
       (cons n (enumerate-interval (+ n 1) m))))
 
-(define (flatmap proc list)
-  (fold-right append '() (map proc list)))
+(define (flatmap proc . lists)
+  (fold-left append '() (apply map (cons proc lists))))
+
+(define (chainmap fs list)
+  (if (null? fs) list
+      (chainmap (cdr fs) (map (car fs) list))))
 
 (define (cross-product list1 list2)
   (flatmap (lambda (e1)
@@ -73,10 +77,8 @@ If a negative argument is given the last n elements are prepended to the rest"
 	(help (cdr l))))
   (help list))
 
-(define (remove list n)
-  (if (= 0 n) list (remove (cdr list) (- n 1))))
 (define (split list s)
-  (cons (take list s) (remove list s)))
+  (cons (take list s) (drop list s)))
 (define (split-per list s)
   (if (null? list)
       '()
@@ -96,3 +98,39 @@ If a negative argument is given the last n elements are prepended to the rest"
   (let ((f (integer-divide n 16)))
     (string-append (char->string (digit->char (car f) 16))
 		   (char->string (digit->char (cdr f) 16)))))
+
+;; converts a string of hex numbers into a string of binary numbers
+(define (hex->bin x)
+  (define (help i p)
+    (if (= p 0.5) '()
+	(if (>= i p)
+	    (cons #\1 (help (- i p) (/ p 2)))
+	    (cons #\0 (help i (/ p 2))))))
+  (list->string (flatmap (lambda (h) (help (char->digit h 16) 8))
+			 (string->list x))))
+;; remove all elements in list1 from list2
+(define (remove-all list1 list2)
+  (remove (lambda (x) (member x list1))
+	  list2))
+
+;; returns the first number for which predicate evaluates to true
+(define (first-true pred n)
+  (if (pred n) n
+      (first-true pred (+ n 1))))
+
+;; breadth first search
+(define (find-connected open closed universe adjacent)
+  (if (null? open) closed
+      (let* ((current (car open))
+	     (adj (remove-all (append open closed)
+			      (adjacent (first current)
+					(second current)
+					universe))))
+	(find-connected (append (cdr open) adj)
+			(cons current closed)
+			universe
+			adjacent))))
+
+(define (nested-coordinates b x y)
+  (+ (* y b)
+     x))

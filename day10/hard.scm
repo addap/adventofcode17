@@ -39,6 +39,6 @@
 				   (list base-knot 0 0)
 				   (lambda (h)
 				     (run (first h) (second h) (third h) lengths)))))
-	 (dense-hash (make-dense-hash sparse-hash)))
+	 (dense-hash (densify sparse-hash)))
     dense-hash))
 		     
