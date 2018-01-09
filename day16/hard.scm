@@ -31,6 +31,21 @@
 (define programs (list->vector (tabulate 16
 					 (lambda (c) (char->string (ascii->char (+ c 97)))))))
 
+;; apply cycles and apply-cumulative 
+(define (disjunct-cycles mapping)
+  (define (find-cycle m res)
+    (let ((next (find (lambda (n) (equal? (car n)
+					  (cdr m)))
+		      mapping)))
+      (cond ((not next) (error "mapping not bijective" mapping))
+	    ((member next res) (cons m res))
+	    (else (find-cycle next (cons m res))))))
+  (if (null? mapping)
+      '()
+      (let ((cycle (find-cycle (car mapping) '())))
+	(cons cycle
+	      (disjunct-cycles (remove-all cycle mapping))))))
+
 ;; since the function is bijective one can decompose the mapping into disjunct cycles
 ;; these can easily be computed (longest is 4) as we only have to do (remainder 1_000_000_000 length) to see in which
 ;; state it will be in after one billion iterations.
@@ -39,17 +54,12 @@
 (define (find-mapping start end)
   "Calculates a map consisting of indices that show at what place the program in that position of the list will end up after one iteration of the dance.
    If we change the mapping so that the index is the position of the program that will end up in that place of the list (inverse function), dance can be expressed without side-effects, will do later"
-  (let* ((p1 (vector->list start))
-	 (p2 (vector->list end))
-	 (the-map (map (lambda (name) (find-index name p2)) p1)))
-    (lambda (ps)
-      (let ((copy (vector-copy ps)))
-	(for-each (lambda (p i)
-		      (vector-set! copy i p))
-		  (vector->list ps)
-		  the-map)
-	copy))))
-
+  (let ((p1 (vector->list start))
+	(p2 (vector->list end)))
+    (vector-map (lambda (s e) (cons s e))
+		start end)))
+			      
+    
 (define dance
   (find-mapping programs (chain moves programs)))
 (define (solve)
