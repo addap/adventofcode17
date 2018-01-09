@@ -108,13 +108,14 @@ If a negative argument is given the last n elements are prepended to the rest"
 	    (cons #\0 (help i (/ p 2))))))
   (list->string (flatmap (lambda (h) (help (char->digit h 16) 8))
 			 (string->list x))))
-;; remove all elements in list1 from list2
+
 (define (remove-all list1 list2)
+  "remove all elements in list1 from list2"
   (remove (lambda (x) (member x list1))
 	  list2))
 
-;; returns the first number for which predicate evaluates to true
 (define (first-true pred n)
+  "returns the first number for which predicate evaluates to true"
   (if (pred n) n
       (first-true pred (+ n 1))))
 
@@ -131,6 +132,12 @@ If a negative argument is given the last n elements are prepended to the rest"
 			universe
 			adjacent))))
 
+
 (define (nested-coordinates b x y)
+  "Translates a pair of 2d coordinates to 1d"
   (+ (* y b)
      x))
+
+(define (chain procedures initial)
+  "chains a list of functions by applying the car to the value until the list is empty"
+  (fold-left (lambda (value proc) (proc value)) initial procedures))
